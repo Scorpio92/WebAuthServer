@@ -1,4 +1,6 @@
 # WebAuthServer
+![Да у тебя талант братан](https://2ch.hk/b/src/163361457/15085740232670.jpg)
+
 Сервер авторизации на Java
 
 Наша Вика тут: https://github.com/mpgp/WebAuthServer/wiki

@@ -89,7 +89,7 @@ CREATE TABLE `AuthInfo` (
 
 ### Как задеплоить сервер
 
-**Создать на сервере папку WebAuthServer и скопировать в нее 4 библиотеки:**
+**Создать на сервере папку WebAuthServer и скопировать в нее 4 библиотеки + файл конфигурации:**
 
 *bcprov-jdk15on-159.jar*
 
@@ -98,6 +98,8 @@ CREATE TABLE `AuthInfo` (
 *mysql-connector-java-5.1.23-bin.jar*
 
 *WebAuthServer.jar*
+
+*server.properties*
 
 **Запустить сервер командой:**
 ```

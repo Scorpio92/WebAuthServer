@@ -11,7 +11,6 @@
 ```
 sudo apt-get install mysql-server
 sudo apt-get install mysql-client
-sudo apt-get install mysql-workbench
 ```
 **Остановите mysqld:**
 ```
@@ -87,18 +86,10 @@ CREATE TABLE `AuthInfo` (
   UNIQUE KEY `sessionKey_UNIQUE` (`sessionKey`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 ```
-```
-CREATE TABLE `ServerKeys` (
-  `pairId` varchar(40) NOT NULL,
-  `publicKey` text NOT NULL,
-  `privateKey` text NOT NULL,
-  PRIMARY KEY (`pairId`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-```
 
-### Как завести запорожец
+### Как задеплоить сервер
 
-**Создать на сервере папку server и скопировать в нее 4 библиотеки:**
+**Создать на сервере папку WebAuthServer и скопировать в нее 4 библиотеки:**
 
 *bcprov-jdk15on-159.jar*
 
@@ -106,9 +97,9 @@ CREATE TABLE `ServerKeys` (
 
 *mysql-connector-java-5.1.23-bin.jar*
 
-*chatserver.jar*
+*WebAuthServer.jar*
 
 **Запустить сервер командой:**
 ```
-java -cp chatserver.jar:/home/ubuntu/server/*: ru.scorpio92.chatserver.AuthServer
+java -cp WebAuthServer.jar:/home/ubuntu/WebAuthServer/*: ru.scorpio92.authserver.AuthServer
 ```

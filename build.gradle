@@ -1,0 +1,9 @@
+apply plugin: 'java-library'
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile files('libs/bcprov-jdk15on-159.jar')
+}
+
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"

@@ -5,15 +5,13 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import ru.scorpio92.authserver.ServerConfigStore;
+
 /**
  * Created by scorpio92 on 1/14/18.
  */
 
 public class DBHelper {
-
-    private static final String dbUrl = "jdbc:mysql://localhost:3306/chat";
-    private static final String user = "server";
-    private static final String password = "server";
 
     private static volatile Connection connection;
 
@@ -21,7 +19,7 @@ public class DBHelper {
         if (connection == null) {
             synchronized (DBHelper.class) {
                 if (connection == null)
-                    connection = DriverManager.getConnection(dbUrl, user, password);
+                    connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/" + ServerConfigStore.DB_NAME, ServerConfigStore.DB_USER_ROOT, ServerConfigStore.DB_PASSWORD_ROOT);
             }
         }
 
@@ -31,5 +29,4 @@ public class DBHelper {
     public static PreparedStatement getPreparedStatement(String sql) throws SQLException {
         return getConnection().prepareStatement(sql);
     }
-
 }

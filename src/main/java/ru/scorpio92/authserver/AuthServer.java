@@ -28,16 +28,16 @@ import ru.scorpio92.authserver.usecase.RegisterUsecase;
 
 public class AuthServer {
 
-    private final static int PORT = 8031;
-
     public static void main(String[] args) throws Throwable {
 
         Security.addProvider(new BouncyCastleProvider());
 
+        ServerConfigStore.init();
+
         KeyStorage.init();
 
         HttpServer server = HttpServer.create();
-        server.bind(new InetSocketAddress(PORT), 0);
+        server.bind(new InetSocketAddress(ServerConfigStore.SERVER_PORT), 0);
         server.createContext("/", new ConnectionHandler());
         server.start();
 

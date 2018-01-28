@@ -13,6 +13,8 @@ import java.util.Base64;
 
 import javax.crypto.Cipher;
 
+import ru.scorpio92.authserver.ServerConfigStore;
+
 /**
  * Created by scorpio92 on 1/13/18.
  */
@@ -35,6 +37,8 @@ public class RSA {
     }
 
     public static String encryptToBase64(PublicKey publicKey, String message) throws Exception {
+        if(!ServerConfigStore.ENCRYPTION_ENABLED)
+            return message;
         Cipher cipher = Cipher.getInstance(ALG, CRYPTO_PROVIDER);
         cipher.init(Cipher.ENCRYPT_MODE, publicKey);
         return new String(Base64.getEncoder().encode(cipher.doFinal(message.getBytes(CHARSET))));
@@ -47,6 +51,8 @@ public class RSA {
     }
 
     public static String decryptFromBase64(PrivateKey privateKey, String encryptedBase64) throws Exception {
+        if(!ServerConfigStore.ENCRYPTION_ENABLED)
+            return encryptedBase64;
         Cipher cipher = Cipher.getInstance(ALG, CRYPTO_PROVIDER);
         cipher.init(Cipher.DECRYPT_MODE, privateKey);
         return new String(cipher.doFinal(Base64.getDecoder().decode(encryptedBase64)), CHARSET);

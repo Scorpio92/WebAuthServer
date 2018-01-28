@@ -8,11 +8,9 @@ import ru.scorpio92.authserver.entity.message.base.Payload;
 
 public class GetServerKeyPayload extends Payload {
 
-    private String ServerPublicKeyId;
     private String ServerPublicKey;
 
-    public GetServerKeyPayload(String serverPublicKeyId, String serverPublicKey) {
-        this.ServerPublicKeyId = serverPublicKeyId;
+    public GetServerKeyPayload(String serverPublicKey) {
         this.ServerPublicKey = serverPublicKey;
     }
 }

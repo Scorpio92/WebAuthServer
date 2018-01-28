@@ -19,7 +19,7 @@ public class GetServerKeyUsecase extends MessageBaseUsecase<GetServerKeyMessage>
         //получаем новую пару публичный-закрытый ключ
         ServerKeyPair serverKeyPair = KeyStorage.getNewPair();
         //отдаем id пары и сам публичный ключ в пэйлоаде
-        return new GetServerKeyMessage(new GetServerKeyPayload(serverKeyPair.getPairId(), serverKeyPair.getPublicKeyStr()));
+        return new GetServerKeyMessage(new GetServerKeyPayload(serverKeyPair.getPublicKeyStr()));
     }
 
     @Override

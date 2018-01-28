@@ -24,7 +24,7 @@ public class GetServerKeyUsecase extends MessageBaseUsecase {
             //отдаем id пары и сам публичный ключ в пэйлоаде
             message = new GetServerKeyMessage(new GetServerKeyPayload(serverKeyPair.getPairId(), serverKeyPair.getPublicKeyStr()));
         } catch (Exception e) {
-            Logger.error("GetServerKeyUsecase", e.getMessage());
+            Logger.error("GetServerKeyUsecase", e);
         }
 
         return message;

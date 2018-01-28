@@ -17,6 +17,7 @@ public class ServerConfigStore {
     public static String DB_USER_ROOT;
     public static String DB_PASSWORD_ROOT;
     public static boolean ENCRYPTION_ENABLED;
+    public static boolean LOGGER_ENABLED;
 
     static void init() throws IOException {
         Properties props = new Properties();
@@ -27,5 +28,6 @@ public class ServerConfigStore {
         DB_USER_ROOT = props.getProperty("DB_USER_ROOT");
         DB_PASSWORD_ROOT = props.getProperty("DB_PASSWORD_ROOT");
         ENCRYPTION_ENABLED = Boolean.valueOf(props.getProperty("ENCRYPTION_ENABLED"));
+        LOGGER_ENABLED = Boolean.valueOf(props.getProperty("LOGGER_ENABLED"));
     }
 }

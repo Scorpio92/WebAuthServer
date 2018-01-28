@@ -53,7 +53,7 @@ public class RegisterUsecase extends MessageBaseUsecase {
                 message = new ErrorMessage(ErrorMessage.PUBLIC_KEY_IS_OVERDUE);
             }
         } catch (Exception e) {
-            Logger.error("RegisterUsecase", e.getMessage());
+            Logger.error("RegisterUsecase", e);
         }
 
         return message;

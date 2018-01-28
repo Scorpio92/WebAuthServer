@@ -49,7 +49,7 @@ public class AuthorizeUsecase extends MessageBaseUsecase {
                 message = new ErrorMessage(ErrorMessage.PUBLIC_KEY_IS_OVERDUE);
             }
         } catch (Exception e) {
-            Logger.error("AuthorizeUsecase", e.getMessage());
+            Logger.error("AuthorizeUsecase", e);
         }
 
         return message;

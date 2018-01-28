@@ -8,20 +8,20 @@ import ru.scorpio92.authserver.entity.message.base.EncryptablePayload;
 
 public class RegisterPayload extends EncryptablePayload {
 
-    private String nickname;
-    private String email;
+    private String Nickname;
+    private String Email;
 
-    private String authToken;
+    private String AuthToken;
 
     public RegisterPayload(String authToken) {
-        this.authToken = authToken;
+        this.AuthToken = authToken;
     }
 
     public String getNickname() {
-        return nickname;
+        return Nickname;
     }
 
     public String getEmail() {
-        return email;
+        return Email;
     }
 }

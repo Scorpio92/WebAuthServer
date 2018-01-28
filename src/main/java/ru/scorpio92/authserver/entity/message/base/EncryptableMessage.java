@@ -11,22 +11,22 @@ import ru.scorpio92.authserver.crypto.RSA;
 
 public abstract class EncryptableMessage extends BaseMessage {
 
-    protected String serverPublicKeyId;
-    protected String clientPublicKey;
+    protected String ServerPublicKeyId;
+    protected String ClientPublicKey;
 
     public EncryptableMessage(MessageType type, EncryptablePayload payload, String clientPublicKey) throws Exception {
         super(type, payload.getEncryptedString(clientPublicKey));
     }
 
     public String getServerPublicKeyId() {
-        return serverPublicKeyId;
+        return ServerPublicKeyId;
     }
 
     public String getClientPublicKey() {
-        return clientPublicKey;
+        return ClientPublicKey;
     }
 
     protected String getDecryptedPayloadString(PrivateKey privateKey) throws Exception {
-        return RSA.decryptFromBase64(privateKey, payload);
+        return RSA.decryptFromBase64(privateKey, Payload);
     }
 }

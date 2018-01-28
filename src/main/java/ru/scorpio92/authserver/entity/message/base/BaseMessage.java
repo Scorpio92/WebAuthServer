@@ -21,22 +21,22 @@ public class BaseMessage {
         ERROR
     }
 
-    private String type;
-    protected String status;
-    protected String errorCode;
-    protected String payload;
+    private String Type;
+    protected String Status;
+    protected String ErrorCode;
+    protected String Payload;
 
     public BaseMessage() {
     }
 
     public BaseMessage(MessageType type, String payload) {
-        this.type = type.name();
-        this.payload = payload;
-        status = SUCCESS.name();
+        this.Type = type.name();
+        this.Payload = payload;
+        Status = SUCCESS.name();
     }
 
     public MessageType getType() {
-        return Enum.valueOf(MessageType.class, type);
+        return Enum.valueOf(MessageType.class, Type);
     }
 
     @Override

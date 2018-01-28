@@ -8,15 +8,15 @@ import ru.scorpio92.authserver.entity.message.base.EncryptablePayload;
 
 public class AuthorizePayload extends EncryptablePayload {
 
-    private String authToken;
+    private String AuthToken;
 
-    private String sessionKey;
+    private String SessionKey;
 
     public AuthorizePayload(String sessionKey) {
-        this.sessionKey = sessionKey;
+        this.SessionKey = sessionKey;
     }
 
     public String getAuthToken() {
-        return authToken;
+        return AuthToken;
     }
 }

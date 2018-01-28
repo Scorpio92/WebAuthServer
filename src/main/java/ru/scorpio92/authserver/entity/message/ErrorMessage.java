@@ -2,6 +2,8 @@ package ru.scorpio92.authserver.entity.message;
 
 import ru.scorpio92.authserver.entity.message.base.BaseMessage;
 
+import static ru.scorpio92.authserver.entity.message.base.BaseMessage.Status.ERROR;
+
 /**
  * Created by scorpio92 on 1/13/18.
  */
@@ -32,7 +34,7 @@ public class ErrorMessage extends BaseMessage {
     public final static int BAD_TOKEN = 2;
 
     public ErrorMessage(int errorCode) {
-        this.status = Status.ERROR.name();
-        this.errorCode = String.valueOf(errorCode);
+        this.Status = ERROR.name();
+        this.ErrorCode = String.valueOf(errorCode);
     }
 }

@@ -1,5 +1,7 @@
 package ru.scorpio92.authserver.entity.message.base;
 
+import java.nio.charset.Charset;
+
 import ru.scorpio92.authserver.tools.JsonWorker;
 
 import static ru.scorpio92.authserver.entity.message.base.BaseMessage.Status.SUCCESS;
@@ -42,5 +44,9 @@ public class BaseMessage {
     @Override
     public String toString() {
         return JsonWorker.getSerializeJson(this);
+    }
+
+    public byte[] getBytes() {
+        return toString().getBytes(Charset.forName("UTF-8"));
     }
 }

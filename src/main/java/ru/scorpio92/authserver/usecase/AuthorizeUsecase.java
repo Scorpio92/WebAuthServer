@@ -9,49 +9,45 @@ import ru.scorpio92.authserver.entity.message.AuthorizeMessage;
 import ru.scorpio92.authserver.entity.message.AuthorizePayload;
 import ru.scorpio92.authserver.entity.message.ErrorMessage;
 import ru.scorpio92.authserver.entity.message.base.BaseMessage;
-import ru.scorpio92.authserver.tools.Logger;
+import ru.scorpio92.authserver.tools.JsonWorker;
 import ru.scorpio92.authserver.usecase.base.MessageBaseUsecase;
 
 /**
  * Created by scorpio92 on 1/22/18.
  */
 
-public class AuthorizeUsecase extends MessageBaseUsecase {
+public class AuthorizeUsecase extends MessageBaseUsecase<AuthorizeMessage> {
 
     @Override
-    public BaseMessage handleAndReturnResponse(BaseMessage requestMessage) {
-        BaseMessage message = null;
+    protected BaseMessage handler(AuthorizeMessage message) throws Exception {
+        //получаем из запроса id пары ключей
+        String pairId = message.getServerPublicKeyId();
+        //достаем публичный ключ клиента
+        String clientPublicKey = message.getClientPublicKey();
+        //достаем по id пару публичный-закрытый ключ
+        ServerKeyPair serverKeyPair = KeyStorage.getKeyPairById(pairId);
 
-        try {
-            AuthorizeMessage authorizeMessage = (AuthorizeMessage) requestMessage;
-            //получаем из запроса id пары ключей
-            String pairId = authorizeMessage.getServerPublicKeyId();
-            //достаем публичный ключ клиента
-            String clientPublicKey = authorizeMessage.getClientPublicKey();
-            //достаем по id пару публичный-закрытый ключ
-            ServerKeyPair serverKeyPair = KeyStorage.getKeyPairById(pairId);
-
-            if(serverKeyPair != null) {
-                //достаем из запроса пэйлоад и расшифровываем его
-                AuthorizePayload authorizePayload = authorizeMessage.getPayload(serverKeyPair.getPrivateKey());
-                AccountsTable accountsTable = new AccountsTable();
-                if (accountsTable.checkAuthTokenExists(authorizePayload.getAuthToken())) { //проверяем валидность токена
-                    //генерируем новый сессионный ключ
-                    SessionKey sessionKey = SessionKey.build(authorizePayload.getAuthToken(), clientPublicKey);
-                    AuthInfoTable authInfoTable = new AuthInfoTable();
-                    //записываем информацию об авторизации в таблицу
-                    authInfoTable.setAuthInfo(authorizePayload.getAuthToken(), sessionKey);
-                    message = new AuthorizeMessage(sessionKey.getIV(), new AuthorizePayload(sessionKey.getSessionKey()), clientPublicKey);
-                } else {
-                    message = new ErrorMessage(ErrorMessage.BAD_TOKEN);
-                }
+        if(serverKeyPair != null) {
+            //достаем из запроса пэйлоад и расшифровываем его
+            AuthorizePayload authorizePayload = message.getPayload(serverKeyPair.getPrivateKey());
+            AccountsTable accountsTable = new AccountsTable();
+            if (accountsTable.checkAuthTokenExists(authorizePayload.getAuthToken())) { //проверяем валидность токена
+                //генерируем новый сессионный ключ
+                SessionKey sessionKey = SessionKey.build(authorizePayload.getAuthToken(), clientPublicKey);
+                AuthInfoTable authInfoTable = new AuthInfoTable();
+                //записываем информацию об авторизации в таблицу
+                authInfoTable.setAuthInfo(authorizePayload.getAuthToken(), sessionKey);
+                return new AuthorizeMessage(sessionKey.getIV(), new AuthorizePayload(sessionKey.getSessionKey()), clientPublicKey);
             } else {
-                message = new ErrorMessage(ErrorMessage.PUBLIC_KEY_IS_OVERDUE);
+                return new ErrorMessage(ErrorMessage.BAD_TOKEN);
             }
-        } catch (Exception e) {
-            Logger.error("AuthorizeUsecase", e);
+        } else {
+            return new ErrorMessage(ErrorMessage.PUBLIC_KEY_IS_OVERDUE);
         }
+    }
 
-        return message;
+    @Override
+    protected AuthorizeMessage getMessage(String requestBody) throws Exception {
+        return JsonWorker.getDeserializeJson(requestBody, AuthorizeMessage.class);
     }
 }

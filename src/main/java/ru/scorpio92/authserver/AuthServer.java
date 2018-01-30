@@ -10,7 +10,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
+import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
 import java.security.Security;
+import java.util.Iterator;
+import java.util.Set;
 
 import ru.scorpio92.authserver.crypto.KeyStorage;
 import ru.scorpio92.authserver.entity.message.ErrorMessage;
@@ -37,6 +44,61 @@ public class AuthServer {
         server.bind(new InetSocketAddress(ServerConfigStore.SERVER_PORT), 0);
         server.createContext("/", new ConnectionHandler());
         server.start();
+
+        //crypto API
+        ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
+        serverSocketChannel.socket().bind(new InetSocketAddress(ServerConfigStore.SERVER_CRYPTO_API_PORT));
+        serverSocketChannel.socket().setReuseAddress(true);
+        serverSocketChannel.configureBlocking(false);
+
+        Selector selector = Selector.open();
+        serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
+
+        ByteBuffer buffer = ByteBuffer.allocate(8192);
+        while (true) {
+            int channelCount = selector.select();
+            if (channelCount > 0) {
+                Set<SelectionKey> keys = selector.selectedKeys();
+                Iterator<SelectionKey> iterator = keys.iterator();
+                while (iterator.hasNext()) {
+                    SelectionKey key = iterator.next();
+                    iterator.remove();
+
+                    if (key.isAcceptable()) {
+                        SocketChannel client = serverSocketChannel.accept();
+                        client.configureBlocking(false);
+                        client.register(selector, SelectionKey.OP_READ, client.socket().getPort());
+                    } else if (key.isReadable()) {
+                        SocketChannel client = (SocketChannel) key.channel();
+                        Logger.log("client " + client.getRemoteAddress() + " connected to service API");
+
+                        StringBuilder sb = new StringBuilder();
+
+                        buffer.clear();
+                        int read;
+                        while( (read = client.read(buffer)) > 0 ) {
+                            buffer.flip();
+                            byte[] bytes = new byte[buffer.limit()];
+                            buffer.get(bytes);
+                            sb.append(new String(bytes));
+                            buffer.clear();
+                        }
+
+                        if (read < 0) {
+                            client.close();
+                        } else {
+                            Logger.log("client send data: ", sb.toString());
+                            try {
+                                BaseMessage message = handleMessage(sb.toString());
+                            } catch (Exception e) {
+                                Logger.error(e);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
     static class ConnectionHandler implements HttpHandler {

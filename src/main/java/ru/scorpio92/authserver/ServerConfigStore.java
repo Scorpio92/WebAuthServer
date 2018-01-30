@@ -13,6 +13,7 @@ public class ServerConfigStore {
     private static final String PROP_FILE_NAME = "server.properties";
 
     public static int SERVER_PORT;
+    public static int SERVER_CRYPTO_API_PORT;
     public static String DB_NAME;
     public static String DB_USER_ROOT;
     public static String DB_PASSWORD_ROOT;
@@ -24,6 +25,7 @@ public class ServerConfigStore {
         InputStream in = AuthServer.class.getResourceAsStream("/" + PROP_FILE_NAME);
         props.load(in);
         SERVER_PORT = Integer.valueOf(props.getProperty("SERVER_PORT"));
+        SERVER_CRYPTO_API_PORT = Integer.valueOf(props.getProperty("SERVER_CRYPTO_API_PORT"));
         DB_NAME = props.getProperty("DB_NAME");
         DB_USER_ROOT = props.getProperty("DB_USER_ROOT");
         DB_PASSWORD_ROOT = props.getProperty("DB_PASSWORD_ROOT");

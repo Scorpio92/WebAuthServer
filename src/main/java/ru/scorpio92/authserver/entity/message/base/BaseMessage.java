@@ -15,7 +15,11 @@ public class BaseMessage {
     public enum MessageType {
         GET_SERVER_KEY,
         REGISTER,
-        AUTHORIZE
+        AUTHORIZE,
+
+        //Service API
+        DECRYPT,
+        ENCRYPT
     }
 
     public enum Status {
@@ -23,7 +27,7 @@ public class BaseMessage {
         ERROR
     }
 
-    private String Type;
+    protected String Type;
     protected String Status;
     protected String ErrorCode;
     protected String Payload;

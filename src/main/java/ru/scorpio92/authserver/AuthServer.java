@@ -25,6 +25,8 @@ import ru.scorpio92.authserver.entity.message.base.BaseMessage;
 import ru.scorpio92.authserver.tools.JsonWorker;
 import ru.scorpio92.authserver.tools.Logger;
 import ru.scorpio92.authserver.usecase.AuthorizeUsecase;
+import ru.scorpio92.authserver.usecase.DecryptUsecase;
+import ru.scorpio92.authserver.usecase.EncryptUsecase;
 import ru.scorpio92.authserver.usecase.GetServerKeyUsecase;
 import ru.scorpio92.authserver.usecase.RegisterUsecase;
 import ru.scorpio92.authserver.usecase.base.MessageBaseUsecase;
@@ -76,7 +78,7 @@ public class AuthServer {
 
                         buffer.clear();
                         int read;
-                        while( (read = client.read(buffer)) > 0 ) {
+                        while ((read = client.read(buffer)) > 0) {
                             buffer.flip();
                             byte[] bytes = new byte[buffer.limit()];
                             buffer.get(bytes);
@@ -90,6 +92,11 @@ public class AuthServer {
                             Logger.log("client send data: ", sb.toString());
                             try {
                                 BaseMessage message = handleMessage(sb.toString());
+                                if(message == null)
+                                    message = new ErrorMessage(ErrorMessage.WTF);
+                                buffer.put(message.getBytes());
+                                buffer.flip();
+                                client.write(buffer);
                             } catch (Exception e) {
                                 Logger.error(e);
                             }
@@ -148,7 +155,7 @@ public class AuthServer {
             BaseMessage baseMessage = JsonWorker.getDeserializeJson(requestBody, BaseMessage.class);
             Logger.log("received message type", baseMessage.getType().name());
 
-            MessageBaseUsecase usecase;
+            MessageBaseUsecase usecase = null;
 
             switch (baseMessage.getType()) {
                 case GET_SERVER_KEY:
@@ -160,18 +167,19 @@ public class AuthServer {
                 case AUTHORIZE:
                     usecase = new AuthorizeUsecase();
                     break;
-                default:
-                    usecase = null;
+                case ENCRYPT:
+                    usecase = new EncryptUsecase();
+                    break;
+                case DECRYPT:
+                    usecase = new DecryptUsecase();
+                    break;
             }
 
-            if (usecase != null)
-                return usecase.handle(requestBody);
+            return usecase.handle(requestBody);
 
         } else {
             throw new IllegalArgumentException();
         }
-
-        return null;
     }
 
     //отсылаем ответ клиенту

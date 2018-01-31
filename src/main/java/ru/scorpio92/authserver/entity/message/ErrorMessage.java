@@ -33,6 +33,10 @@ public class ErrorMessage extends BaseMessage {
     public final static int AUTH_IS_CLOSED = 1;
     public final static int BAD_TOKEN = 2;
 
+    //Crypto API
+    public final static int CRYPTO_SESSION_KEY_IS_OVERDUE = 1;
+    public final static int CRYPTO_BAD_TOKEN = 2;
+
     public ErrorMessage(int errorCode) {
         this.Status = ERROR.name();
         this.ErrorCode = String.valueOf(errorCode);

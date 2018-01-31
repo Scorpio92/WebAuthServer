@@ -2,6 +2,7 @@ package ru.scorpio92.authserver.tools;
 
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public final class JsonWorker {
 
@@ -11,7 +12,8 @@ public final class JsonWorker {
      * @return возвращает json-строку
      */
     public static String getSerializeJson(Object obj){
-        return new Gson().toJson(obj);
+        Gson gson = new GsonBuilder().disableHtmlEscaping().create();
+        return gson.toJson(obj);
     }
 
     /**

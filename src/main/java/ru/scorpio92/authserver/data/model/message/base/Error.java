@@ -1,4 +1,4 @@
-package ru.scorpio92.authserver.model.base;
+package ru.scorpio92.authserver.data.model.message.base;
 
 public class Error {
 

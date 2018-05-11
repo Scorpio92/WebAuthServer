@@ -1,4 +1,4 @@
-package ru.scorpio92.authserver.model.request;
+package ru.scorpio92.authserver.data.model.message.request;
 
 public class RegisterServerData {
 

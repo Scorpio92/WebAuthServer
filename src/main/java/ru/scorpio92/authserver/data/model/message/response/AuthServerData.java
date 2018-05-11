@@ -1,4 +1,4 @@
-package ru.scorpio92.authserver.model.response;
+package ru.scorpio92.authserver.data.model.message.response;
 
 public class AuthServerData {
 

@@ -1,9 +1,9 @@
 package ru.scorpio92.authserver.domain;
 
 import ru.scorpio92.authserver.Constants;
-import ru.scorpio92.authserver.data.model.message.base.BaseMessage;
-import ru.scorpio92.authserver.data.model.message.base.ErrorCode;
-import ru.scorpio92.authserver.data.model.message.base.ErrorMessage;
+import ru.scorpio92.authserver.model.base.BaseMessage;
+import ru.scorpio92.authserver.model.base.ErrorCode;
+import ru.scorpio92.authserver.model.base.ErrorMessage;
 import ru.scorpio92.authserver.tools.JsonWorker;
 
 /**

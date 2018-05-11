@@ -1,4 +1,6 @@
-package ru.scorpio92.authserver.data.model.message.base;
+package ru.scorpio92.authserver.model.base;
+
+abstract
 
 public class BaseMessage {
 

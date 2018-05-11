@@ -21,16 +21,12 @@ public class Logger {
     }
 
     public static void error(Exception e) {
-        if (ServerConfigStore.LOGGER_ENABLED && e != null) {
+        if (ServerConfigStore.LOGGER_ENABLED && e != null)
             System.err.println("LOGGER EXCEPTION-> " + e.getMessage());
-            e.printStackTrace();
-        }
     }
 
     public static void error(String tag, Exception e) {
-        if (ServerConfigStore.LOGGER_ENABLED && e != null) {
+        if (ServerConfigStore.LOGGER_ENABLED && e != null)
             System.err.println("LOGGER EXCEPTION-> " + tag + ": " + e.getMessage());
-            e.printStackTrace();
-        }
     }
 }

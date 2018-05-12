@@ -4,6 +4,7 @@ import com.sun.net.httpserver.HttpExchange;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 
 import ru.scorpio92.authserver.Constants;
 import ru.scorpio92.authserver.domain.ServiceRouter;
@@ -34,7 +35,7 @@ public class HttpConnectionHandler extends Thread {
         */
         try {
             handleRequest();
-        } catch (Exception e) {
+        } catch (UnsupportedEncodingException e) {
             Logger.error(e);
         } finally {
             if (exchange != null)
@@ -42,9 +43,14 @@ public class HttpConnectionHandler extends Thread {
         }
     }
 
-    private void handleRequest() throws Exception {
+    private void handleRequest() throws UnsupportedEncodingException {
         //читаем то что пришло от клиента
-        String requestBody = new String(IO.getBytesFromInputStream(exchange.getRequestBody()), Constants.CHARSET);
+        String requestBody = null;
+        try {
+            requestBody = new String(IO.getBytesFromInputStream(exchange.getRequestBody()), Constants.CHARSET);
+        } catch (Exception e) {
+            Logger.error(e);
+        }
         //обрабатываем и возвращаем массив байт
         sendMessageToClient(exchange, new ServiceRouter(requestBody).getResult());
     }

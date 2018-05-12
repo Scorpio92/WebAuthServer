@@ -22,17 +22,12 @@ public class AccountsTable extends AbstractTable {
         super("accounts");
     }
 
-    public boolean checkAccountExists(String login, String passwordHash) throws SQLException {
-        PreparedStatement preparedStatement = getSelectStatement(Arrays.asList(ACCOUNT_ID_COLUMN), LOGIN_COLUMN + " = ? AND " + PASSWORD_HASH_COLUMN + " = ?");
-        preparedStatement.setString(1, login);
-        preparedStatement.setString(2, passwordHash);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        int count = 0;
-        while (resultSet.next()) {
-            count++;
-        }
-        closePreparedStatement(preparedStatement);
-        return count != 0;
+    public boolean checkLoginExists(String login) throws SQLException {
+        return checkColumnExists(LOGIN_COLUMN, login);
+    }
+
+    public boolean checkNicknameExists(String nickname) throws SQLException {
+        return checkColumnExists(NICKNAME_COLUMN, nickname);
     }
 
 

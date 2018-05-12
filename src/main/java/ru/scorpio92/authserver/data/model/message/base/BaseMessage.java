@@ -3,6 +3,7 @@ package ru.scorpio92.authserver.data.model.message.base;
 public class BaseMessage {
 
     public enum Type {
+        UNKNOWN,
         REGISTER,
         AUTHORIZE,
         DEAUTHORIZE

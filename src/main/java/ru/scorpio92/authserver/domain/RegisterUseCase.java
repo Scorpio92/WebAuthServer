@@ -9,6 +9,7 @@ import ru.scorpio92.authserver.data.model.message.base.SuccessMessage;
 import ru.scorpio92.authserver.data.model.message.request.RegisterServerData;
 import ru.scorpio92.authserver.tools.JsonWorker;
 import ru.scorpio92.authserver.tools.Logger;
+import ru.scorpio92.authserver.tools.ValidateUtils;
 import ru.scorpio92.authserver.tools.security.SHA;
 
 public class RegisterUseCase implements UseCase {
@@ -16,8 +17,28 @@ public class RegisterUseCase implements UseCase {
     @Override
     public BaseMessage execute(BaseMessage requestMessage) {
         BaseMessage response;
+
         try {
             RegisterServerData registerServerData = JsonWorker.getDeserializeJson(requestMessage.getServerData(), RegisterServerData.class);
+
+            if (!ValidateUtils.validateParam(registerServerData.getLogin(), "^[A-Za-z0-9]{3,15}$"))
+                throw new ExceptionWithErrorCode(ErrorCode.Register.INCORRECT_LOGIN);
+
+            if (!ValidateUtils.validateParam(registerServerData.getPassword(), "^(.){3,20}$"))
+                throw new ExceptionWithErrorCode(ErrorCode.Register.INCORRECT_PASSWORD);
+
+            if (!ValidateUtils.validateParam(registerServerData.getNickname(), "^(.){3,20}$"))
+                throw new ExceptionWithErrorCode(ErrorCode.Register.INCORRECT_NICKNAME);
+
+            AccountsTable accountsTable = new AccountsTable();
+
+            if (accountsTable.checkLoginExists(registerServerData.getLogin())) {
+                throw new ExceptionWithErrorCode(ErrorCode.Register.LOGIN_ALREADY_EXISTS);
+            }
+
+            if (accountsTable.checkNicknameExists(registerServerData.getNickname())) {
+                throw new ExceptionWithErrorCode(ErrorCode.Register.NICKNAME_ALREADY_EXISTS);
+            }
 
             Account account = new Account(
                     registerServerData.getLogin(),
@@ -25,18 +46,19 @@ public class RegisterUseCase implements UseCase {
                     registerServerData.getNickname()
             );
 
-            AccountsTable accountsTable = new AccountsTable();
+            accountsTable.insertAccount(account);
 
-            if (accountsTable.checkAccountExists(account.getLogin(), account.getPasswordHash())) {
-                response = new ErrorMessage(BaseMessage.Type.REGISTER, ErrorCode.Register.LOGIN_ALREADY_EXISTS);
-            } else {
-                accountsTable.insertAccount(account);
-                response = new SuccessMessage(BaseMessage.Type.REGISTER);
-            }
+            response = new SuccessMessage(BaseMessage.Type.REGISTER);
+
         } catch (Exception e) {
             Logger.error(e);
-            response = new ErrorMessage(BaseMessage.Type.REGISTER, ErrorCode.General.WTF);
+            if (e instanceof ExceptionWithErrorCode) {
+                response = new ErrorMessage(BaseMessage.Type.REGISTER, ((ExceptionWithErrorCode) e).getErrorCode());
+            } else {
+                response = new ErrorMessage(BaseMessage.Type.REGISTER, ErrorCode.General.WTF);
+            }
         }
+
         return response;
     }
 }

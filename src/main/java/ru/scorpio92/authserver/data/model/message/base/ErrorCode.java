@@ -23,11 +23,17 @@ public class ErrorCode {
         //логин не соответствует формату
         public final static int INCORRECT_LOGIN = 1;
 
-        //логин уже есть
+        //логин занят
         public final static int LOGIN_ALREADY_EXISTS = 2;
 
         //пароль не соответствует формату
         public final static int INCORRECT_PASSWORD = 3;
+
+        //никнейм не соответствует формату
+        public final static int INCORRECT_NICKNAME = 4;
+
+        //никнейм занят
+        public final static int NICKNAME_ALREADY_EXISTS = 5;
     }
 
     /**

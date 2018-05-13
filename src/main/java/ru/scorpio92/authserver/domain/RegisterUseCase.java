@@ -21,13 +21,13 @@ public class RegisterUseCase implements UseCase {
         try {
             RegisterServerData registerServerData = JsonWorker.getDeserializeJson(requestMessage.getServerData(), RegisterServerData.class);
 
-            if (!ValidateUtils.validateParam(registerServerData.getLogin(), "^[A-Za-z0-9]{3,15}$"))
+            if (!ValidateUtils.validateParam(registerServerData.getLogin(), RegisterServerData.LOGIN_REGEXP))
                 throw new ExceptionWithErrorCode(ErrorCode.Register.INCORRECT_LOGIN);
 
-            if (!ValidateUtils.validateParam(registerServerData.getPassword(), "^(.){3,20}$"))
+            if (!ValidateUtils.validateParam(registerServerData.getPassword(), RegisterServerData.PASSWORD_REGEXP))
                 throw new ExceptionWithErrorCode(ErrorCode.Register.INCORRECT_PASSWORD);
 
-            if (!ValidateUtils.validateParam(registerServerData.getNickname(), "^(.){3,20}$"))
+            if (!ValidateUtils.validateParam(registerServerData.getNickname(), RegisterServerData.NICKNAME_REGEXP))
                 throw new ExceptionWithErrorCode(ErrorCode.Register.INCORRECT_NICKNAME);
 
             AccountsTable accountsTable = new AccountsTable();
@@ -43,7 +43,7 @@ public class RegisterUseCase implements UseCase {
             Account account = new Account(
                     registerServerData.getLogin(),
                     SHA.getSHA1(registerServerData.getPassword()),
-                    registerServerData.getNickname()
+                    (registerServerData.getNickname() != null) ? registerServerData.getNickname() : registerServerData.getLogin()
             );
 
             accountsTable.insertAccount(account);

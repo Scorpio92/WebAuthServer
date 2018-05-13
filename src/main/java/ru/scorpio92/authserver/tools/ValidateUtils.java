@@ -7,10 +7,10 @@ public class ValidateUtils {
     public static boolean validateParam(String param, String regexp) {
         boolean nonEmpty = checkIsNonEmptyParam(param);
         boolean regexpChecked = false;
-        if(regexp == null) {
+        if (regexp == null) {
             regexpChecked = true;
         } else {
-            if(nonEmpty) {
+            if (nonEmpty) {
                 regexpChecked = checkRegexp(param, regexp);
             }
         }
@@ -23,7 +23,7 @@ public class ValidateUtils {
     }
 
     public static boolean checkRegexp(String param, String regexp) {
-        if(param == null || regexp == null || regexp.isEmpty())
+        if (param == null || regexp == null || regexp.isEmpty())
             return false;
 
         Pattern pattern = Pattern.compile(regexp);

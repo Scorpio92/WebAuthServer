@@ -1,8 +1,13 @@
 package ru.scorpio92.authserver.data.db;
 
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import ru.scorpio92.authserver.data.db.base.AbstractTable;
+import ru.scorpio92.authserver.data.model.AuthInfo;
 
 public class AuthInfoTable extends AbstractTable {
 
@@ -16,5 +21,21 @@ public class AuthInfoTable extends AbstractTable {
 
     public boolean checkAuthTokenExists(String authToken) throws SQLException {
         return checkColumnExists(AUTH_TOKEN_COLUMN, authToken);
+    }
+
+    public void insertAuthInfo(AuthInfo authInfo) throws SQLException {
+        List<String> columns = new ArrayList<>(Arrays.asList(ACCOUNT_ID_COLUMN, AUTH_TOKEN_COLUMN));
+        PreparedStatement preparedStatement = getInsertStatement(columns, ACCOUNT_ID_COLUMN);
+        preparedStatement.setInt(1, authInfo.getAccountId());
+        preparedStatement.setString(2, authInfo.getAuthToken());
+        preparedStatement.execute();
+        closePreparedStatement(preparedStatement);
+    }
+
+    public void deleteAuthInfo(String authToken) throws SQLException {
+        PreparedStatement preparedStatement = getDeleteStatement(AUTH_TOKEN_COLUMN);
+        preparedStatement.setString(1, authToken);
+        preparedStatement.execute();
+        closePreparedStatement(preparedStatement);
     }
 }

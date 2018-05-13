@@ -9,6 +9,7 @@ import java.util.List;
 
 import ru.scorpio92.authserver.data.db.base.AbstractTable;
 import ru.scorpio92.authserver.data.model.Account;
+import ru.scorpio92.authserver.tools.Logger;
 
 public class AccountsTable extends AbstractTable {
 
@@ -45,5 +46,24 @@ public class AccountsTable extends AbstractTable {
 
         preparedStatement.executeUpdate();
         closePreparedStatement(preparedStatement);
+    }
+
+    public Integer getAccountId(String login, String passwordHash) {
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = getSelectStatement(Arrays.asList(ACCOUNT_ID_COLUMN), LOGIN_COLUMN + " = ? AND " + PASSWORD_HASH_COLUMN + " = ?");
+            preparedStatement.setString(1, login);
+            preparedStatement.setString(2, passwordHash);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet.next();
+            return resultSet.getInt(ACCOUNT_ID_COLUMN);
+        } catch (Exception e) {
+            Logger.error(e);
+        } finally {
+            if (preparedStatement != null)
+                closePreparedStatement(preparedStatement);
+        }
+
+        return null;
     }
 }

@@ -1,6 +1,7 @@
 package ru.scorpio92.authserver.data.db;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,5 +38,13 @@ public class AuthInfoTable extends AbstractTable {
         preparedStatement.setString(1, authToken);
         preparedStatement.execute();
         closePreparedStatement(preparedStatement);
+    }
+
+    public int getAccountIdByToken(String authToken) throws SQLException {
+        PreparedStatement preparedStatement = getSelectStatement(Arrays.asList(ACCOUNT_ID_COLUMN), AUTH_TOKEN_COLUMN + " = ?");
+        preparedStatement.setString(1, authToken);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        resultSet.next();
+        return resultSet.getInt(ACCOUNT_ID_COLUMN);
     }
 }

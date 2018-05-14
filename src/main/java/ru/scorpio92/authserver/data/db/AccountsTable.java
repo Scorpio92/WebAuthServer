@@ -66,4 +66,12 @@ public class AccountsTable extends AbstractTable {
 
         return null;
     }
+
+    public Account getAccountByAccountId(int accountId) throws SQLException {
+        PreparedStatement preparedStatement = getSelectStatement(Arrays.asList(LOGIN_COLUMN, PASSWORD_HASH_COLUMN, NICKNAME_COLUMN), ACCOUNT_ID_COLUMN + " = ?");
+        preparedStatement.setInt(1, accountId);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        resultSet.next();
+        return new Account(resultSet.getString(LOGIN_COLUMN), resultSet.getString(PASSWORD_HASH_COLUMN), resultSet.getString(NICKNAME_COLUMN));
+    }
 }

@@ -6,7 +6,8 @@ public class BaseMessage {
         UNKNOWN,
         REGISTER,
         AUTHORIZE,
-        DEAUTHORIZE
+        DEAUTHORIZE,
+        CHECK_TOKEN
     }
 
     public enum Status {

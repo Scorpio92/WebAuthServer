@@ -59,6 +59,14 @@ public class ErrorCode {
     }
 
     /**
+     * Проверка токена
+     */
+    public static class CheckToken {
+        //невалидный токен
+        public final static int INVALID_TOKEN = 1;
+    }
+
+    /**
      * Функция возвращающая описание ошибки по коду ошибки
      *
      * @param errorCode

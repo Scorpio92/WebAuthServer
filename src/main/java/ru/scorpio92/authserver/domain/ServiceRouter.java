@@ -35,6 +35,9 @@ public class ServiceRouter {
                 case DEAUTHORIZE:
                     responseMessage = new DeauthorizeUseCase().execute(requestMessage);
                     break;
+                case CHECK_TOKEN:
+                    responseMessage = new CheckTokenUseCase().execute(requestMessage);
+                    break;
                 default:
                     throw new IllegalArgumentException("unknown message type");
             }

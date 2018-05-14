@@ -1,6 +1,6 @@
 package ru.scorpio92.authserver.data.model.message.request;
 
-public class AuthServerData {
+public class AuthServerDataRequest {
 
     private String login;
     private String password;

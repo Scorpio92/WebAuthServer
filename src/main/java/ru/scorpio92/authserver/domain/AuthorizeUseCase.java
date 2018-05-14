@@ -10,8 +10,9 @@ import ru.scorpio92.authserver.data.model.message.base.BaseMessage;
 import ru.scorpio92.authserver.data.model.message.base.ErrorCode;
 import ru.scorpio92.authserver.data.model.message.base.ErrorMessage;
 import ru.scorpio92.authserver.data.model.message.base.SuccessMessage;
-import ru.scorpio92.authserver.data.model.message.request.AuthServerData;
-import ru.scorpio92.authserver.data.model.message.request.RegisterServerData;
+import ru.scorpio92.authserver.data.model.message.request.AuthServerDataRequest;
+import ru.scorpio92.authserver.data.model.message.request.RegisterServerDataRequest;
+import ru.scorpio92.authserver.data.model.message.response.AuthServerDataResponse;
 import ru.scorpio92.authserver.tools.JsonWorker;
 import ru.scorpio92.authserver.tools.Logger;
 import ru.scorpio92.authserver.tools.ValidateUtils;
@@ -25,24 +26,26 @@ public class AuthorizeUseCase implements UseCase {
         BaseMessage response;
 
         try {
-            AuthServerData authServerData = JsonWorker.getDeserializeJson(requestMessage.getServerData(), AuthServerData.class);
+            AuthServerDataRequest authServerDataRequest = JsonWorker.getDeserializeJson(requestMessage.getServerData(), AuthServerDataRequest.class);
 
-            if (!ValidateUtils.validateParam(authServerData.getLogin(), RegisterServerData.LOGIN_REGEXP))
+            if (!ValidateUtils.validateParam(authServerDataRequest.getLogin(), RegisterServerDataRequest.LOGIN_REGEXP))
                 throw new ExceptionWithErrorCode(ErrorCode.Authorize.INCORRECT_LOGIN);
 
-            if (!ValidateUtils.validateParam(authServerData.getPassword(), RegisterServerData.PASSWORD_REGEXP))
+            if (!ValidateUtils.validateParam(authServerDataRequest.getPassword(), RegisterServerDataRequest.PASSWORD_REGEXP))
                 throw new ExceptionWithErrorCode(ErrorCode.Authorize.INCORRECT_PASSWORD);
 
-            Integer accountId = new AccountsTable().getAccountId(authServerData.getLogin(), SHA.getSHA1(authServerData.getPassword()));
+            Integer accountId = new AccountsTable().getAccountId(authServerDataRequest.getLogin(), SHA.getSHA1(authServerDataRequest.getPassword()));
 
             if (accountId == null)
                 throw new ExceptionWithErrorCode(ErrorCode.Authorize.INCORRECT_AUTH_PAIR);
 
-            AuthInfo authInfo = new AuthInfo(accountId, generateAuthToken(authServerData));
+            String authToken = generateAuthToken(authServerDataRequest);
+            AuthInfo authInfo = new AuthInfo(accountId, authToken);
 
             new AuthInfoTable().insertAuthInfo(authInfo);
 
             response = new SuccessMessage(BaseMessage.Type.AUTHORIZE);
+            response.setServerData(JsonWorker.getSerializeJson(new AuthServerDataResponse(authToken)));
 
         } catch (Exception e) {
             Logger.error(e);
@@ -56,7 +59,7 @@ public class AuthorizeUseCase implements UseCase {
         return response;
     }
 
-    private String generateAuthToken(AuthServerData authServerData) throws UnsupportedEncodingException, NoSuchAlgorithmException {
-        return SHA.getSHA512(SHA.getSHA512(authServerData.getLogin() + authServerData.getPassword()) + SecRandom.getRandomString());
+    private String generateAuthToken(AuthServerDataRequest authServerDataRequest) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        return SHA.getSHA512(SHA.getSHA512(authServerDataRequest.getLogin() + authServerDataRequest.getPassword()) + SecRandom.getRandomString());
     }
 }

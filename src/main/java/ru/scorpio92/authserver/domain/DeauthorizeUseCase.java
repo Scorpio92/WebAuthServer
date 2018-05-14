@@ -5,7 +5,7 @@ import ru.scorpio92.authserver.data.model.message.base.BaseMessage;
 import ru.scorpio92.authserver.data.model.message.base.ErrorCode;
 import ru.scorpio92.authserver.data.model.message.base.ErrorMessage;
 import ru.scorpio92.authserver.data.model.message.base.SuccessMessage;
-import ru.scorpio92.authserver.data.model.message.request.DeauthServerData;
+import ru.scorpio92.authserver.data.model.message.request.DeauthServerDataRequest;
 import ru.scorpio92.authserver.tools.JsonWorker;
 import ru.scorpio92.authserver.tools.Logger;
 
@@ -15,14 +15,14 @@ public class DeauthorizeUseCase implements UseCase {
     public BaseMessage execute(BaseMessage requestMessage) {
         BaseMessage response;
         try {
-            DeauthServerData deauthServerData = JsonWorker.getDeserializeJson(requestMessage.getServerData(), DeauthServerData.class);
+            DeauthServerDataRequest deauthServerDataRequest = JsonWorker.getDeserializeJson(requestMessage.getServerData(), DeauthServerDataRequest.class);
 
             AuthInfoTable authInfoTable = new AuthInfoTable();
 
-            if (!authInfoTable.checkAuthTokenExists(deauthServerData.getAuthToken()))
+            if (!authInfoTable.checkAuthTokenExists(deauthServerDataRequest.getAuthToken()))
                 throw new ExceptionWithErrorCode(ErrorCode.Deauthorize.INCORRECT_AUTH_TOKEN);
 
-            authInfoTable.deleteAuthInfo(deauthServerData.getAuthToken());
+            authInfoTable.deleteAuthInfo(deauthServerDataRequest.getAuthToken());
 
             response = new SuccessMessage(BaseMessage.Type.DEAUTHORIZE);
 

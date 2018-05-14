@@ -21,7 +21,7 @@ public class ServiceAPI extends API {
     @Override
     protected void callable() throws Exception {
         ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
-        serverSocketChannel.socket().bind(new InetSocketAddress(ServerConfigStore.SERVER_PORT));
+        serverSocketChannel.socket().bind(new InetSocketAddress(ServerConfigStore.SAPI_SERVER_PORT));
         //serverSocketChannel.socket().setReuseAddress(true);
         serverSocketChannel.configureBlocking(false);
 

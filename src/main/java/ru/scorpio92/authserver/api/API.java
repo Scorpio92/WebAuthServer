@@ -34,7 +34,7 @@ public abstract class API extends Thread {
 
     public static HttpServer getHttpServerInstance(HttpHandler httpHandler) throws Exception {
         HttpServer server = HttpServer.create();
-        server.bind(new InetSocketAddress(ServerConfigStore.SERVER_PORT), 0);
+        server.bind(new InetSocketAddress(ServerConfigStore.PAPI_SERVER_PORT), 0);
         server.createContext("/", httpHandler);
         return server;
     }

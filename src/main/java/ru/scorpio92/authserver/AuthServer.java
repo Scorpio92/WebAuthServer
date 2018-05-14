@@ -1,6 +1,7 @@
 package ru.scorpio92.authserver;
 
 import ru.scorpio92.authserver.api.PublicAPI;
+import ru.scorpio92.authserver.api.ServiceAPI;
 import ru.scorpio92.authserver.tools.Logger;
 
 /**
@@ -16,5 +17,8 @@ public class AuthServer {
 
         //инициализация публичной части API
         new PublicAPI().start();
+
+        //инициализация сервисной части API
+        new ServiceAPI().start();
     }
 }
